@@ -105,6 +105,15 @@
 @utility count-chip { display: grid; min-width: 2.25rem; height: 2rem; place-items: center; border-radius: 0.45rem; background: var(--color-primary); color: var(--color-primary-foreground); font-size: 0.85rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 @utility count-chip-small { display: grid; min-width: 1.7rem; height: 1.35rem; place-items: center; border-radius: 0.25rem; background: color-mix(in oklab, var(--banner-foreground) 16%, transparent); color: var(--color-banner-foreground); font-size: 0.65rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 
+@keyframes emphasis-pulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 currentColor; }
+  50% { transform: scale(1.018); box-shadow: 0 0 0 7px transparent; }
+}
+
+@utility buy-pulse { animation: emphasis-pulse 1.35s ease-in-out infinite; }
+@utility offer-pulse { animation: emphasis-pulse 1.6s ease-in-out infinite; }
+@utility urgency-pulse { animation: emphasis-pulse 1.45s ease-in-out infinite; }
+
 @media (min-width: 640px) { .section-title { font-size: 2.15rem; } }
 @media (max-width: 1023px) { .page-shell { max-width: 680px; } }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }

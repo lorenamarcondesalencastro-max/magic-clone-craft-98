@@ -11,4 +11,4 @@
 
 ## Architecture decisions
 
-- Keep this single-product storefront as one route with local public product assets, because the source experience is a focused one-page offer.
+- Keep this single-product storefront as one route, using local public assets for the cloned source and CDN pointers for user-uploaded media.
