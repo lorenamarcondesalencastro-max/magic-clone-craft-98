@@ -297,12 +297,9 @@ function Index() {
           <p className="section-kicker text-center">Qualidade em cada detalhe</p>
           <h2 className="section-title text-center">Feitas para transformar seu banho</h2>
            <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-             {[1, 2, 3, 4].map((number) => (
-               <div key={number} className="contents">
-                 <img src={`/images/toalha-copy-${number}.webp`} alt={`Destaque das toalhas Serena ${number}`} className="aspect-[2/3] w-full rounded-lg object-cover shadow-product" />
-                 {number === 1 && <video src={gifCopy.url} className="aspect-[16/9] w-full rounded-lg object-cover shadow-product sm:col-span-2 lg:col-span-4" autoPlay muted loop playsInline aria-label="Demonstração das toalhas Serena" />}
-               </div>
-             ))}
+             <img src="/images/toalha-copy-1.webp" alt="Destaque das toalhas Serena 1" className="aspect-[2/3] w-full rounded-lg object-cover shadow-product" />
+             <video src={gifCopy.url} className="aspect-[16/9] w-full rounded-lg object-cover shadow-product sm:col-span-2 lg:col-span-4" autoPlay muted loop playsInline aria-label="Demonstração das toalhas Serena" />
+             {[2, 3, 4].map((number) => <img key={number} src={`/images/toalha-copy-${number}.webp`} alt={`Destaque das toalhas Serena ${number}`} className="aspect-[2/3] w-full rounded-lg object-cover shadow-product" />)}
           </div>
         </div>
       </section>
