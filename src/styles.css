@@ -103,7 +103,7 @@
 @utility section-title { margin-top: 0.7rem; font-size: 1.75rem; line-height: 1.15; font-weight: 800; color: var(--color-foreground); }
 @utility gallery-arrow { position: absolute; top: 50%; display: grid; height: 2rem; width: 2rem; transform: translateY(-50%); place-items: center; border-radius: 999px; background: var(--color-card); color: var(--color-foreground); box-shadow: 0 2px 10px color-mix(in oklab, var(--foreground) 15%, transparent); }
 @utility count-chip { display: grid; min-width: 2.25rem; height: 2rem; place-items: center; border-radius: 0.45rem; background: var(--color-primary); color: var(--color-primary-foreground); font-size: 0.85rem; font-weight: 800; font-variant-numeric: tabular-nums; }
-@utility count-chip-small { display: grid; min-width: 1.7rem; height: 1.35rem; place-items: center; border-radius: 0.25rem; background: color-mix(in oklab, var(--banner-foreground) 16%, transparent); color: var(--color-banner-foreground); font-size: 0.65rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+@utility count-chip-small { display: grid; min-width: 1.7rem; height: 1.35rem; place-items: center; border-radius: 0.25rem; background: var(--color-urgency); color: var(--color-urgency-foreground); font-size: 0.65rem; font-weight: 800; font-variant-numeric: tabular-nums; }
 
 @keyframes emphasis-pulse {
   0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 currentColor; }

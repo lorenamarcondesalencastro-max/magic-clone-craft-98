@@ -111,7 +111,7 @@ const faqs = [
 ];
 
 function useCountdown() {
-  const [seconds, setSeconds] = useState(9 * 3600 + 6 * 60 + 31);
+  const [seconds, setSeconds] = useState(1 * 3600);
 
   useEffect(() => {
     const timer = window.setInterval(() => setSeconds((value) => (value > 0 ? value - 1 : 0)), 1000);
@@ -211,7 +211,7 @@ function ProductDetails({ palette, setPalette }: { palette: PaletteName; setPale
       </div>
       <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-primary">Oferta exclusiva por tempo limitado</p>
       <h1 className="mt-4 max-w-xl text-[30px] font-extrabold leading-[1.17] text-foreground sm:text-[38px] lg:text-[40px]">
-        COMPRE 10 GANHE 10
+        Toalhas Algodão Turco Premium compre 10, ganhe 10 toalhas de rosto [COMPRE 10 GANHE 10]
       </h1>
       <p className="mt-4 text-sm leading-6 text-muted-foreground">10 toalhas de banho gigantes + 10 toalhas de rosto de brinde. Maciez e absorção de hotel cinco estrelas.</p>
 
