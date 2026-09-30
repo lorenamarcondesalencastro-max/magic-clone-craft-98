@@ -23,6 +23,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import gifCopy from "@/assets/gif-copy.mp4.asset.json";
+import brancoHotelImage from "@/assets/paleta-branco-hotel.webp.asset.json";
+import eleganceImage from "@/assets/paleta-elegance.webp.asset.json";
+import familiaImage from "@/assets/paleta-familia.webp.asset.json";
+import urbanImage from "@/assets/paleta-urban.webp.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -31,9 +36,9 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Kit Serena com 10 toalhas de banho gigantes e 10 toalhas de rosto de brinde por R$ 59,99.",
+          "Kit Serena: compre 10 toalhas de banho gigantes e ganhe 10 toalhas de rosto por R$ 59,97.",
       },
-      { property: "og:title", content: "Kit Serena | Compre 10, Leve 20" },
+      { property: "og:title", content: "Kit Serena | Compre 10, Ganhe 10" },
       {
         property: "og:description",
         content: "Maciez e absorção de hotel cinco estrelas em um kit com 20 peças.",
@@ -53,7 +58,26 @@ const gallery = [9, 1, 2, 3, 4, 5, 6, 7, 8, 10].map((number) => ({
       : `Detalhe do kit de toalhas Serena ${number}`,
 }));
 
-const palettes = ["Elegance", "Família", "Branco Hotel", "Urban"];
+const palettes = {
+  Elegance: {
+    image: eleganceImage.url,
+    checkout: "https://checkout.serenapagamentoseguro.store/pay/175b5b7e-a2ec-444e-a173-0db2f1af2805",
+  },
+  Família: {
+    image: familiaImage.url,
+    checkout: "https://checkout.serenapagamentoseguro.store/pay/3a8aa197-f7c7-4575-9eed-0d94cf2bc970",
+  },
+  "Branco Hotel": {
+    image: brancoHotelImage.url,
+    checkout: "https://checkout.serenapagamentoseguro.store/pay/afa00454-5ed1-4590-8a0a-a6b8b95ed42b",
+  },
+  Urban: {
+    image: urbanImage.url,
+    checkout: "https://checkout.serenapagamentoseguro.store/pay/1fb307e8-06c1-42df-a76a-7c09dc1d79a3",
+  },
+} as const;
+
+type PaletteName = keyof typeof palettes;
 
 const benefits = [
   {
@@ -123,23 +147,28 @@ function Countdown({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function BuyButton({ className = "" }: { className?: string }) {
+function BuyButton({ checkout, className = "" }: { checkout: string; className?: string }) {
   return (
     <Button
       size="lg"
-      className={`h-14 w-full rounded-md bg-buy text-base font-extrabold text-buy-foreground shadow-buy hover:bg-buy-hover ${className}`}
-      onClick={() => document.querySelector("#comprar")?.scrollIntoView({ behavior: "smooth" })}
+      className={`buy-pulse h-14 w-full rounded-md bg-buy text-base font-extrabold text-buy-foreground shadow-buy hover:bg-buy-hover ${className}`}
+      onClick={() => window.location.assign(checkout)}
     >
       COMPRAR AGORA <ChevronRight className="size-5" />
     </Button>
   );
 }
 
-function Gallery() {
-  const [active, setActive] = useState(1);
+function Gallery({ palette }: { palette: PaletteName }) {
+  const [active, setActive] = useState(0);
+  const paletteImage = palettes[palette].image;
+
+  useEffect(() => setActive(0), [palette]);
   const previous = () => setActive((active - 1 + gallery.length) % gallery.length);
   const next = () => setActive((active + 1) % gallery.length);
-  const activeImage = gallery[active] ?? gallery[0];
+  const activeImage = active === 0
+    ? { src: paletteImage, alt: `Kit Serena na paleta ${palette}` }
+    : gallery[active] ?? gallery[0];
 
   if (!activeImage) return null;
 
@@ -156,7 +185,7 @@ function Gallery() {
         </Button>
       </div>
       <div className="mt-3 grid grid-cols-6 gap-2 sm:grid-cols-7 lg:grid-cols-6">
-        {gallery.slice(0, 6).map((image, index) => (
+        {[{ src: paletteImage, alt: `Paleta ${palette}` }, ...gallery.slice(1, 6)].map((image, index) => (
           <button
             key={image.src}
             onClick={() => setActive(index)}
@@ -171,8 +200,7 @@ function Gallery() {
   );
 }
 
-function ProductDetails() {
-  const [palette, setPalette] = useState("Elegance");
+function ProductDetails({ palette, setPalette }: { palette: PaletteName; setPalette: (palette: PaletteName) => void }) {
   return (
     <section id="comprar" className="min-w-0">
       <div className="flex items-center gap-2 text-sm">
@@ -183,7 +211,7 @@ function ProductDetails() {
       </div>
       <p className="mt-5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-primary">Oferta exclusiva por tempo limitado</p>
       <h1 className="mt-4 max-w-xl text-[30px] font-extrabold leading-[1.17] text-foreground sm:text-[38px] lg:text-[40px]">
-        Toalhas Algodão Turco Premium compre 10, leve 10 toalhas de rosto [COMPRE 10 LEVE 10]
+        COMPRE 10 GANHE 10
       </h1>
       <p className="mt-4 text-sm leading-6 text-muted-foreground">10 toalhas de banho gigantes + 10 toalhas de rosto de brinde. Maciez e absorção de hotel cinco estrelas.</p>
 
@@ -192,24 +220,19 @@ function ProductDetails() {
           <span className="line-through">R$ 324,00</span>
           <span className="rounded bg-discount px-2 py-1 text-[10px] font-bold text-primary">63% OFF</span>
         </div>
-        <div className="mt-1 flex items-end gap-2"><span className="pb-1 text-sm text-muted-foreground">por</span><strong className="font-serif text-[34px] leading-none text-price">R$ 59,99</strong></div>
+        <div className="mt-1 flex items-end gap-2"><span className="pb-1 text-sm text-muted-foreground">por</span><strong className="font-serif text-[34px] leading-none text-price">R$ 59,97</strong></div>
       </div>
 
-      <div className="mt-4 rounded-md bg-offer px-4 py-3 text-offer-foreground">
-        <p className="flex items-center gap-2 text-xs font-extrabold"><Gift className="size-4" /> OFERTA COMPRE 10, LEVE 10 — HOJE!</p>
+      <div className="offer-pulse mt-4 rounded-md bg-offer px-4 py-3 text-offer-foreground">
+        <p className="flex items-center gap-2 text-xs font-extrabold"><Gift className="size-4" /> OFERTA COMPRE 10, GANHE 10 — HOJE!</p>
         <p className="ml-6 mt-1 text-[11px]">Você ganha 10 toalhas de rosto de brinde.</p>
       </div>
-      <div className="mt-2 rounded-md bg-urgency px-3 py-2 text-center text-[10px] font-extrabold text-urgency-foreground">ÚLTIMAS UNIDADES DISPONÍVEIS — GARANTA SEU KIT HOJE!</div>
-
-      <div className="mt-3 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 rounded-xl border border-border px-4 py-4 shadow-sm">
-        <strong className="min-w-0 text-xs">A oferta termina em:</strong>
-        <Countdown />
-      </div>
+      <div className="urgency-pulse mt-2 rounded-md bg-urgency px-3 py-2 text-center text-[10px] font-extrabold text-urgency-foreground">ÚLTIMAS UNIDADES DISPONÍVEIS — GARANTA SEU KIT HOJE!</div>
 
       <fieldset className="mt-5">
         <legend className="mb-2 text-xs font-bold">Escolha sua paleta</legend>
         <div className="grid grid-cols-2 gap-2">
-          {palettes.map((name) => (
+          {(Object.keys(palettes) as PaletteName[]).map((name) => (
             <Button key={name} variant="outline" onClick={() => setPalette(name)} className={palette === name ? "h-10 border-primary bg-selected text-xs shadow-none hover:bg-selected" : "h-10 text-xs shadow-none"}>
               {palette === name && <Check className="size-4" />} {name}
             </Button>
@@ -221,13 +244,15 @@ function ProductDetails() {
         <img src="/images/correios-logo.png" alt="Correios" className="h-12 w-16 object-contain" />
         <div className="min-w-0"><span className="text-[10px] uppercase text-muted-foreground">Oferta adicional</span><p className="text-xs font-extrabold text-primary">FRETE GRÁTIS SOMENTE HOJE</p></div>
       </div>
-      <BuyButton className="mt-3" />
+      <BuyButton checkout={palettes[palette].checkout} className="mt-3" />
       <p className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground"><LockKeyhole className="size-3.5" /> Compra segura e protegida</p>
     </section>
   );
 }
 
 function Index() {
+  const [palette, setPalette] = useState<PaletteName>("Elegance");
+  const checkout = palettes[palette].checkout;
   const assuranceItems: Array<[LucideIcon, string, string]> = [
     [Truck, "Envio rápido", "para todo Brasil"],
     [ShieldCheck, "Compra segura", "dados protegidos"],
@@ -238,26 +263,23 @@ function Index() {
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <div className="bg-banner text-banner-foreground">
         <div className="page-shell flex min-h-8 items-center justify-center gap-4 px-4 py-1 text-center text-[10px] font-extrabold uppercase">
-          <span>Promoção especial Serena • Compre 10 e leve 20</span><Countdown compact />
+          <span>Promoção especial Serena • Compre 10 e ganhe 10</span><Countdown compact />
         </div>
       </div>
       <header className="border-b border-border bg-nav">
-        <div className="page-shell flex h-[62px] items-center justify-between px-5">
+        <div className="page-shell flex h-[62px] items-center justify-center px-5">
           <a href="#top" className="font-serif text-xl tracking-[0.35em] text-primary">SERENA</a>
-          <nav className="hidden items-center gap-8 text-xs text-muted-foreground sm:flex">
-            <a href="#beneficios" className="hover:text-primary">Benefícios</a><a href="#kit" className="hover:text-primary">Conheça o kit</a><a href="#duvidas" className="hover:text-primary">Dúvidas</a>
-          </nav>
         </div>
       </header>
 
       <div id="top" className="page-shell grid gap-10 px-5 py-10 lg:grid-cols-[1fr_1fr] lg:gap-12 lg:py-12">
-        <Gallery /><ProductDetails />
+        <Gallery palette={palette} /><ProductDetails palette={palette} setPalette={setPalette} />
       </div>
 
-      <section className="border-y border-border bg-soft py-5">
-        <div className="page-shell grid grid-cols-1 gap-4 px-5 sm:grid-cols-3">
+      <section className="border-y border-border bg-soft py-2">
+        <div className="page-shell grid grid-cols-3 gap-1 px-3">
           {assuranceItems.map(([Icon, title, text]) => (
-            <div key={title} className="flex items-center justify-center gap-3 py-2"><Icon className="size-6 text-primary" /><p className="text-xs"><strong className="block">{title}</strong><span className="text-muted-foreground">{text}</span></p></div>
+            <div key={title} className="flex min-w-0 items-center justify-center gap-1.5 py-1"><Icon className="size-4 shrink-0 text-primary" /><p className="text-[9px] leading-tight sm:text-[11px]"><strong className="block">{title}</strong><span className="text-muted-foreground">{text}</span></p></div>
           ))}
         </div>
       </section>
@@ -274,14 +296,16 @@ function Index() {
         <div className="page-shell px-5">
           <p className="section-kicker text-center">Qualidade em cada detalhe</p>
           <h2 className="section-title text-center">Feitas para transformar seu banho</h2>
-          <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {[1, 2, 3, 4].map((number) => <img key={number} src={`/images/toalha-copy-${number}.webp`} alt={`Destaque das toalhas Serena ${number}`} className="aspect-[2/3] w-full rounded-lg object-cover shadow-product" />)}
+           <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+             <img src="/images/toalha-copy-1.webp" alt="Destaque das toalhas Serena 1" className="aspect-[2/3] w-full rounded-lg object-cover shadow-product" />
+             <video src={gifCopy.url} className="aspect-[16/9] w-full rounded-lg object-cover shadow-product sm:col-span-2 lg:col-span-4" autoPlay muted loop playsInline aria-label="Demonstração das toalhas Serena" />
+             {[2, 3, 4].map((number) => <img key={number} src={`/images/toalha-copy-${number}.webp`} alt={`Destaque das toalhas Serena ${number}`} className="aspect-[2/3] w-full rounded-lg object-cover shadow-product" />)}
           </div>
         </div>
       </section>
 
       <section className="page-shell px-5 py-16">
-        <div className="aspect-video overflow-hidden rounded-xl bg-foreground shadow-product">
+        <div className="mx-auto aspect-[9/16] w-full max-w-[607px] overflow-hidden rounded-xl bg-foreground shadow-product">
           <iframe className="h-full w-full border-0" src="https://www.youtube.com/embed/b7q9S2iTV-I?rel=0" title="Sinta o toque de um hotel 5 estrelas em casa" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
         </div>
       </section>
@@ -311,10 +335,10 @@ function Index() {
       </section>
 
       <section className="bg-final py-16 text-final-foreground">
-        <div className="mx-auto max-w-2xl px-5 text-center"><p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-final-muted">Oferta especial</p><h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">Renove seus banhos com conforto cinco estrelas</h2><p className="mt-4 text-sm text-final-muted">Aproveite a condição Compre 10, Leve 10 por apenas R$ 59,99.</p><div className="mx-auto mt-7 max-w-md"><BuyButton /></div></div>
+        <div className="mx-auto max-w-2xl px-5 text-center"><p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-final-muted">Oferta especial</p><h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">Renove seus banhos com conforto cinco estrelas</h2><p className="mt-4 text-sm text-final-muted">Aproveite a condição Compre 10, Ganhe 10 por apenas R$ 59,97.</p><div className="mx-auto mt-7 max-w-md"><BuyButton checkout={checkout} /></div></div>
       </section>
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur sm:hidden">
-        <BuyButton />
+        <BuyButton checkout={checkout} />
       </div>
     </main>
   );
