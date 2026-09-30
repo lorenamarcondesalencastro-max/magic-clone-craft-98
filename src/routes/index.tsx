@@ -36,9 +36,9 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Kit Serena com 10 toalhas de banho gigantes e 10 toalhas de rosto de brinde por R$ 59,99.",
+          "Kit Serena: compre 10 toalhas de banho gigantes e ganhe 10 toalhas de rosto por R$ 59,97.",
       },
-      { property: "og:title", content: "Kit Serena | Compre 10, Leve 20" },
+      { property: "og:title", content: "Kit Serena | Compre 10, Ganhe 10" },
       {
         property: "og:description",
         content: "Maciez e absorção de hotel cinco estrelas em um kit com 20 peças.",
@@ -160,8 +160,10 @@ function BuyButton({ checkout, className = "" }: { checkout: string; className?:
 }
 
 function Gallery({ palette }: { palette: PaletteName }) {
-  const [active, setActive] = useState(1);
+  const [active, setActive] = useState(0);
   const paletteImage = palettes[palette].image;
+
+  useEffect(() => setActive(0), [palette]);
   const previous = () => setActive((active - 1 + gallery.length) % gallery.length);
   const next = () => setActive((active + 1) % gallery.length);
   const activeImage = active === 0
