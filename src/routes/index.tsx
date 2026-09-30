@@ -136,7 +136,7 @@ function BuyButton({ className = "" }: { className?: string }) {
 }
 
 function Gallery() {
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(1);
   const previous = () => setActive((active - 1 + gallery.length) % gallery.length);
   const next = () => setActive((active + 1) % gallery.length);
   const activeImage = gallery[active] ?? gallery[0];
@@ -146,6 +146,7 @@ function Gallery() {
   return (
     <div className="min-w-0">
       <div className="relative aspect-square overflow-hidden rounded-xl bg-muted shadow-product">
+        <span className="absolute left-3 top-3 z-10 rounded-md bg-offer px-3 py-1 text-[10px] font-extrabold uppercase text-offer-foreground">20 peças!</span>
         <img src={activeImage.src} alt={activeImage.alt} className="h-full w-full object-cover" />
         <Button variant="ghost" size="icon" className="gallery-arrow left-3" onClick={previous} aria-label="Imagem anterior">
           <ChevronLeft />
