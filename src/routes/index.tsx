@@ -12,6 +12,7 @@ import {
   Sparkles,
   Star,
   Truck,
+  type LucideIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -138,17 +139,20 @@ function Gallery() {
   const [active, setActive] = useState(0);
   const previous = () => setActive((active - 1 + gallery.length) % gallery.length);
   const next = () => setActive((active + 1) % gallery.length);
+  const activeImage = gallery[active] ?? gallery[0];
+
+  if (!activeImage) return null;
 
   return (
     <div className="min-w-0">
       <div className="relative aspect-square overflow-hidden rounded-xl bg-muted shadow-product">
-        <img src={gallery[active].src} alt={gallery[active].alt} className="h-full w-full object-cover" />
-        <button className="gallery-arrow left-3" onClick={previous} aria-label="Imagem anterior">
+        <img src={activeImage.src} alt={activeImage.alt} className="h-full w-full object-cover" />
+        <Button variant="ghost" size="icon" className="gallery-arrow left-3" onClick={previous} aria-label="Imagem anterior">
           <ChevronLeft />
-        </button>
-        <button className="gallery-arrow right-3" onClick={next} aria-label="Próxima imagem">
+        </Button>
+        <Button variant="ghost" size="icon" className="gallery-arrow right-3" onClick={next} aria-label="Próxima imagem">
           <ChevronRight />
-        </button>
+        </Button>
       </div>
       <div className="mt-3 grid grid-cols-6 gap-2 sm:grid-cols-7 lg:grid-cols-6">
         {gallery.slice(0, 6).map((image, index) => (
@@ -223,6 +227,12 @@ function ProductDetails() {
 }
 
 function Index() {
+  const assuranceItems: Array<[LucideIcon, string, string]> = [
+    [Truck, "Envio rápido", "para todo Brasil"],
+    [ShieldCheck, "Compra segura", "dados protegidos"],
+    [PackageCheck, "7 dias", "para experimentar"],
+  ];
+
   return (
     <main className="min-h-screen overflow-hidden bg-background text-foreground">
       <div className="bg-banner text-banner-foreground">
@@ -245,12 +255,8 @@ function Index() {
 
       <section className="border-y border-border bg-soft py-5">
         <div className="page-shell grid grid-cols-1 gap-4 px-5 sm:grid-cols-3">
-          {[
-            [Truck, "Envio rápido", "para todo Brasil"],
-            [ShieldCheck, "Compra segura", "dados protegidos"],
-            [PackageCheck, "7 dias", "para experimentar"],
-          ].map(([Icon, title, text]) => (
-            <div key={String(title)} className="flex items-center justify-center gap-3 py-2"><Icon className="size-6 text-primary" /><p className="text-xs"><strong className="block">{String(title)}</strong><span className="text-muted-foreground">{String(text)}</span></p></div>
+          {assuranceItems.map(([Icon, title, text]) => (
+            <div key={title} className="flex items-center justify-center gap-3 py-2"><Icon className="size-6 text-primary" /><p className="text-xs"><strong className="block">{title}</strong><span className="text-muted-foreground">{text}</span></p></div>
           ))}
         </div>
       </section>
@@ -306,6 +312,9 @@ function Index() {
       <section className="bg-final py-16 text-final-foreground">
         <div className="mx-auto max-w-2xl px-5 text-center"><p className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-final-muted">Oferta especial</p><h2 className="mt-3 text-3xl font-extrabold sm:text-4xl">Renove seus banhos com conforto cinco estrelas</h2><p className="mt-4 text-sm text-final-muted">Aproveite a condição Compre 10, Leve 10 por apenas R$ 59,99.</p><div className="mx-auto mt-7 max-w-md"><BuyButton /></div></div>
       </section>
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 p-3 backdrop-blur sm:hidden">
+        <BuyButton />
+      </div>
     </main>
   );
 }
